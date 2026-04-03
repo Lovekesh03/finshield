@@ -145,8 +145,6 @@ const Dashboard = () => {
           </table>
         )}
       </div>
-      </div>
-
       {/* Transaction History Section */}
       <div className="glass-panel" style={{ padding: '24px', marginTop: '32px' }}>
         <h2 className="text-xl" style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: 8 }}>

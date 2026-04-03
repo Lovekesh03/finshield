@@ -1,16 +1,46 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ProTrade — Demo Trading Platform
 
-Currently, two official plugins are available:
+ProTrade is a modern, demo trading platform built with React and Vite. It simulates stock trading, fund transfers, user authentication, and privacy features with a beautiful, glassmorphic UI. All logic is simulated in the frontend for demonstration purposes.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tech Stack
 
-## React Compiler
+- **React** — UI library for building interactive user interfaces
+- **Vite** — Fast build tool and development server
+- **React Router DOM** — Client-side routing
+- **Lucide React** — Icon library
+- **ESLint** — Linting for code quality
+- **Context API** — Global state management (auth, trading, notifications)
+- **CSS (custom classes)** — Modern, glassmorphic UI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Main Features
 
-## Expanding the ESLint configuration
+- **Authentication**: Simulated login, registration, and logout (no real backend)
+- **Dashboard**: View net worth, portfolio, buying power, and transaction history
+- **Deposit Funds**: Add money to your account (simulated)
+- **Trade Stocks**: Buy and sell stocks with real-time mock prices
+- **Transfer Funds**: Simulate wire transfers with fraud detection alerts
+- **Transaction History**: See all trades, deposits, and transfers
+- **User Profile**: View and edit user info, see account stats
+- **Notifications**: Alerts for large trades, low balance, and suspicious activity
+- **Safe Explore Tab**: Simulated privacy sandbox with "Ghost Identity" and fake network telemetry
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+1. Install dependencies:
+	```bash
+	npm install
+	```
+2. Start the development server:
+	```bash
+	npm run dev
+	```
+3. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## Notes
+
+- All data is stored in memory or localStorage; there is no backend or real trading.
+- The Safe Explore tab and network telemetry are for UI demonstration only.
+
+---
+Feel free to use this project as a starting point for more advanced trading or fintech demos!
