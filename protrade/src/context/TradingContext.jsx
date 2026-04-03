@@ -4,6 +4,7 @@ const TradingContext = createContext();
 
 export const useTrading = () => useContext(TradingContext);
 
+
 export const TradingProvider = ({ children }) => {
   const [balance, setBalance] = useState(25000.00);
   const [portfolio, setPortfolio] = useState([
@@ -11,7 +12,6 @@ export const TradingProvider = ({ children }) => {
     { symbol: 'MSFT', shares: 20, avgPrice: 310.5 },
     { symbol: 'TSLA', shares: 15, avgPrice: 180.2 }
   ]);
-  
   const [stocks, setStocks] = useState([
     { symbol: 'AAPL', name: 'Apple Inc.', price: 173.50, change: 1.2 },
     { symbol: 'MSFT', name: 'Microsoft Corp.', price: 338.11, change: -0.5 },
@@ -19,6 +19,8 @@ export const TradingProvider = ({ children }) => {
     { symbol: 'AMZN', name: 'Amazon.com', price: 128.90, change: 0.8 },
     { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 450.20, change: 3.5 }
   ]);
+  // Transaction history: { type, details, amount, date, meta }
+  const [transactions, setTransactions] = useState([]);
 
   // Simulate live price updates
   useEffect(() => {
@@ -36,6 +38,7 @@ export const TradingProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
+
   const buyStock = (symbol, shares, currentPrice) => {
     const cost = shares * currentPrice;
     if (balance >= cost) {
@@ -49,10 +52,21 @@ export const TradingProvider = ({ children }) => {
         }
         return [...prev, { symbol, shares, avgPrice: currentPrice }];
       });
+      setTransactions(prev => [
+        {
+          type: 'Buy',
+          details: `${shares} shares of ${symbol} @ $${currentPrice.toFixed(2)}`,
+          amount: -cost,
+          date: new Date().toLocaleString(),
+          meta: { symbol, shares, price: currentPrice }
+        },
+        ...prev
+      ]);
       return { success: true };
     }
     return { success: false, error: 'Insufficient funds' };
   };
+
 
   const sellStock = (symbol, shares, currentPrice) => {
     const holding = portfolio.find(p => p.symbol === symbol);
@@ -65,21 +79,42 @@ export const TradingProvider = ({ children }) => {
         }
         return prev.map(p => p.symbol === symbol ? { ...p, shares: p.shares - shares } : p);
       });
+      setTransactions(prev => [
+        {
+          type: 'Sell',
+          details: `${shares} shares of ${symbol} @ $${currentPrice.toFixed(2)}`,
+          amount: revenue,
+          date: new Date().toLocaleString(),
+          meta: { symbol, shares, price: currentPrice }
+        },
+        ...prev
+      ]);
       return { success: true };
     }
     return { success: false, error: 'Insufficient shares' };
   };
 
-  const transferFunds = (amount, toAccount) => {
+
+  const transferFunds = (amount, toAccount, meta = {}) => {
     if (balance >= amount) {
       setBalance(prev => prev - amount);
+      setTransactions(prev => [
+        {
+          type: 'Transfer',
+          details: `Transfer to ${toAccount}`,
+          amount: -amount,
+          date: new Date().toLocaleString(),
+          meta
+        },
+        ...prev
+      ]);
       return { success: true };
     }
     return { success: false, error: 'Insufficient funds' };
   };
 
   return (
-    <TradingContext.Provider value={{ balance, portfolio, stocks, buyStock, sellStock, transferFunds }}>
+    <TradingContext.Provider value={{ balance, portfolio, stocks, buyStock, sellStock, transferFunds, transactions }}>
       {children}
     </TradingContext.Provider>
   );

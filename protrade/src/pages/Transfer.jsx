@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useTrading } from '../context/TradingContext';
 import FraudAlert from '../components/FraudAlert';
 import { ShieldCheck, Send } from 'lucide-react';
 
 const Transfer = () => {
+  const { transferFunds } = useTrading();
   const [formData, setFormData] = useState({
     accountName: '',
     accountNumber: '',
@@ -53,6 +55,16 @@ const Transfer = () => {
 
   const executeTransfer = () => {
     setAlertConfig(null);
+    // Record transaction in context
+    transferFunds(
+      parseFloat(formData.amount),
+      formData.accountNumber,
+      {
+        recipient: formData.accountName,
+        routingNumber: formData.routingNumber,
+        note: 'Wire transfer from Transfer page'
+      }
+    );
     alert('Transfer executed successfully!');
     setFormData({ accountName: '', accountNumber: '', routingNumber: '', amount: '' });
   };

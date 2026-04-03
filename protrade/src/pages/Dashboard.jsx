@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTrading } from '../context/TradingContext';
-import { TrendingUp, TrendingDown, DollarSign, Briefcase } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Briefcase, Clock } from 'lucide-react';
 
 const Dashboard = () => {
-  const { balance, portfolio, stocks } = useTrading();
+  const { balance, portfolio, stocks, transactions } = useTrading();
 
   const totalPortfolioValue = portfolio.reduce((acc, holding) => {
     const currentPrice = stocks.find(s => s.symbol === holding.symbol)?.price || holding.avgPrice;
@@ -95,6 +95,42 @@ const Dashboard = () => {
               })}
             </tbody>
           </table>
+        )}
+      </div>
+      </div>
+
+      {/* Transaction History Section */}
+      <div className="glass-panel" style={{ padding: '24px', marginTop: '32px' }}>
+        <h2 className="text-xl" style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Clock size={20} /> Transaction History
+        </h2>
+        {transactions && transactions.length > 0 ? (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ borderBottom: '1px solid var(--glass-border)', textAlign: 'left' }}>
+                <th style={{ padding: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>Type</th>
+                <th style={{ padding: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>Details</th>
+                <th style={{ padding: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>Amount</th>
+                <th style={{ padding: '12px', color: 'var(--text-muted)', fontWeight: 500 }}>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((tx, idx) => (
+                <tr key={idx} style={{ borderBottom: '1px solid var(--glass-border)' }}>
+                  <td style={{ padding: '12px', fontWeight: 600 }}>{tx.type}</td>
+                  <td style={{ padding: '12px' }}>{tx.details}</td>
+                  <td style={{ padding: '12px', color: tx.amount < 0 ? 'var(--accent-danger)' : 'var(--accent-success)' }}>
+                    {tx.amount < 0 ? '-' : '+'}${Math.abs(tx.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </td>
+                  <td style={{ padding: '12px', fontSize: 13 }}>{tx.date}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)' }}>
+            No transactions yet.
+          </div>
         )}
       </div>
     </div>
