@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTrading } from '../context/TradingContext';
 import { TrendingUp, TrendingDown, DollarSign, Briefcase, Clock } from 'lucide-react';
 
 const Dashboard = () => {
-  const { balance, portfolio, stocks, transactions } = useTrading();
+  const { balance, portfolio, stocks, transactions, depositFunds } = useTrading();
+  const [showDeposit, setShowDeposit] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositError, setDepositError] = useState('');
+  const [depositSuccess, setDepositSuccess] = useState('');
 
   const totalPortfolioValue = portfolio.reduce((acc, holding) => {
     const currentPrice = stocks.find(s => s.symbol === holding.symbol)?.price || holding.avgPrice;
@@ -12,6 +16,26 @@ const Dashboard = () => {
 
   const totalNetWorth = balance + totalPortfolioValue;
 
+  const handleDeposit = (e) => {
+    e.preventDefault();
+    const amt = parseFloat(depositAmount);
+    if (!amt || amt <= 0) {
+      setDepositError('Enter a valid amount');
+      setDepositSuccess('');
+      return;
+    }
+    const res = depositFunds(amt);
+    if (res.success) {
+      setDepositSuccess(`Successfully deposited $${amt.toLocaleString()}`);
+      setDepositError('');
+      setDepositAmount('');
+      setTimeout(() => { setShowDeposit(false); setDepositSuccess(''); }, 1200);
+    } else {
+      setDepositError(res.error);
+      setDepositSuccess('');
+    }
+  };
+
   return (
     <div className="animate-slide-up">
       <header style={{ marginBottom: '32px' }}>
@@ -19,8 +43,8 @@ const Dashboard = () => {
         <p className="text-muted">Welcome to your ProTrade dashboard.</p>
       </header>
 
-      <div className="grid-3" style={{ marginBottom: '32px' }}>
-        <div className="glass-panel" style={{ padding: '24px' }}>
+      <div className="grid-3" style={{ marginBottom: '32px', position: 'relative' }}>
+        <div className="glass-panel" style={{ padding: '24px', position: 'relative' }}>
           <div className="flex items-center gap-3" style={{ marginBottom: '16px' }}>
             <div style={{ padding: '12px', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', color: 'var(--accent-primary)' }}>
               <DollarSign size={24} />
@@ -28,6 +52,30 @@ const Dashboard = () => {
             <h3 className="text-muted">Total Net Worth</h3>
           </div>
           <div className="text-3xl" style={{ fontWeight: 800 }}>${totalNetWorth.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <button className="btn btn-success" style={{ position: 'absolute', top: 16, right: 16, padding: '8px 16px', fontSize: 14 }} onClick={() => setShowDeposit(true)}>
+            Deposit Funds
+          </button>
+              {/* Deposit Modal */}
+              {showDeposit && (
+                <div style={{
+                  position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
+                  <div className="glass-panel animate-slide-up" style={{ minWidth: 320, padding: 32, position: 'relative' }}>
+                    <button onClick={() => setShowDeposit(false)} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: 'var(--text-muted)' }}>&times;</button>
+                    <h2 className="text-xl" style={{ marginBottom: 16 }}>Deposit Funds</h2>
+                    <form onSubmit={handleDeposit}>
+                      <div className="input-group">
+                        <label>Amount ($)</label>
+                        <input type="number" className="input-field" value={depositAmount} onChange={e => setDepositAmount(e.target.value)} min="1" required />
+                      </div>
+                      {depositError && <div className="badge badge-danger" style={{ margin: '12px 0' }}>{depositError}</div>}
+                      {depositSuccess && <div className="badge badge-success" style={{ margin: '12px 0' }}>{depositSuccess}</div>}
+                      <button type="submit" className="btn btn-success" style={{ width: '100%', marginTop: 12, padding: 12 }}>Deposit</button>
+                    </form>
+                  </div>
+                </div>
+              )}
         </div>
 
         <div className="glass-panel" style={{ padding: '24px' }}>

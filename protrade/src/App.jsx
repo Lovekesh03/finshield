@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Trade from './pages/Trade';
 import Transfer from './pages/Transfer';
 import SafeExplore from './pages/SafeExplore';
+import Profile from './pages/Profile';
 import Layout from './components/Layout';
 
 // Protected Route Wrapper
@@ -48,6 +49,13 @@ function AppRoutes() {
         <ProtectedRoute>
           <Layout>
             <SafeExplore />
+          </Layout>
+        </ProtectedRoute>
+      } />
+      <Route path="/profile" element={
+        <ProtectedRoute>
+          <Layout>
+            <Profile />
           </Layout>
         </ProtectedRoute>
       } />

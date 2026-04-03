@@ -21,6 +21,30 @@ export const TradingProvider = ({ children }) => {
   ]);
   // Transaction history: { type, details, amount, date, meta }
   const [transactions, setTransactions] = useState([]);
+  // Notifications: { type, message, date }
+  const [notifications, setNotifications] = useState([]);
+  // Deposit funds
+  const depositFunds = (amount) => {
+    if (amount > 0) {
+      setBalance(prev => prev + amount);
+      setTransactions(prev => [
+        {
+          type: 'Deposit',
+          details: `Deposit to account`,
+          amount: amount,
+          date: new Date().toLocaleString(),
+          meta: {}
+        },
+        ...prev
+      ]);
+      setNotifications(prev => [
+        { type: 'success', message: `Deposited $${amount.toLocaleString()}`, date: new Date().toLocaleString() },
+        ...prev
+      ]);
+      return { success: true };
+    }
+    return { success: false, error: 'Invalid deposit amount' };
+  };
 
   // Simulate live price updates
   useEffect(() => {
@@ -62,8 +86,24 @@ export const TradingProvider = ({ children }) => {
         },
         ...prev
       ]);
+      if (cost > 10000) {
+        setNotifications(prev => [
+          { type: 'warning', message: `Large trade: Bought $${cost.toLocaleString()} of ${symbol}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
+      if (balance - cost < 1000) {
+        setNotifications(prev => [
+          { type: 'danger', message: `Low balance: $${(balance - cost).toLocaleString()}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
       return { success: true };
     }
+    setNotifications(prev => [
+      { type: 'danger', message: `Trade failed: Insufficient funds`, date: new Date().toLocaleString() },
+      ...prev
+    ]);
     return { success: false, error: 'Insufficient funds' };
   };
 
@@ -89,8 +129,24 @@ export const TradingProvider = ({ children }) => {
         },
         ...prev
       ]);
+      if (revenue > 10000) {
+        setNotifications(prev => [
+          { type: 'warning', message: `Large trade: Sold $${revenue.toLocaleString()} of ${symbol}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
+      if (balance + revenue < 1000) {
+        setNotifications(prev => [
+          { type: 'danger', message: `Low balance: $${(balance + revenue).toLocaleString()}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
       return { success: true };
     }
+    setNotifications(prev => [
+      { type: 'danger', message: `Trade failed: Insufficient shares`, date: new Date().toLocaleString() },
+      ...prev
+    ]);
     return { success: false, error: 'Insufficient shares' };
   };
 
@@ -108,13 +164,29 @@ export const TradingProvider = ({ children }) => {
         },
         ...prev
       ]);
+      if (amount > 10000) {
+        setNotifications(prev => [
+          { type: 'warning', message: `Large transfer: $${amount.toLocaleString()} to ${toAccount}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
+      if (balance - amount < 1000) {
+        setNotifications(prev => [
+          { type: 'danger', message: `Low balance: $${(balance - amount).toLocaleString()}`, date: new Date().toLocaleString() },
+          ...prev
+        ]);
+      }
       return { success: true };
     }
+    setNotifications(prev => [
+      { type: 'danger', message: `Transfer failed: Insufficient funds`, date: new Date().toLocaleString() },
+      ...prev
+    ]);
     return { success: false, error: 'Insufficient funds' };
   };
 
   return (
-    <TradingContext.Provider value={{ balance, portfolio, stocks, buyStock, sellStock, transferFunds, transactions }}>
+    <TradingContext.Provider value={{ balance, portfolio, stocks, buyStock, sellStock, transferFunds, depositFunds, transactions, notifications }}>
       {children}
     </TradingContext.Provider>
   );
