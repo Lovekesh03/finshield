@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, ShieldCheck, LogOut, Wallet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -6,7 +6,8 @@ import { useTrading } from '../context/TradingContext';
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
-  const { balance } = useTrading();
+  const { balance, notifications } = useTrading();
+  const [dismissed, setDismissed] = useState([]);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -57,7 +58,20 @@ const Layout = ({ children }) => {
       </aside>
 
       {/* Main Content */}
-      <main className="main-content">
+      <main className="main-content" style={{ position: 'relative' }}>
+        {/* Notifications */}
+        {notifications && notifications.length > 0 && (
+          <div style={{ position: 'fixed', top: 24, right: 24, zIndex: 2000, minWidth: 320 }}>
+            {notifications.slice(0, 3).map((n, idx) => (
+              !dismissed.includes(idx) && (
+                <div key={idx} className={`badge badge-${n.type}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12, padding: '16px 20px', fontSize: 16, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                  <span>{n.message}</span>
+                  <button onClick={() => setDismissed([...dismissed, idx])} style={{ background: 'none', border: 'none', fontSize: 20, marginLeft: 16, cursor: 'pointer', color: 'inherit' }}>&times;</button>
+                </div>
+              )
+            ))}
+          </div>
+        )}
         {children}
       </main>
     </div>
