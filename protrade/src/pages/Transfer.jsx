@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTrading } from '../context/TradingContext';
 import FraudAlert from '../components/FraudAlert';
 import { ShieldCheck, Send } from 'lucide-react';
+import { fraudSignalCheck } from '../utils/fraudEngine';
 
 const Transfer = () => {
   const { transferFunds } = useTrading();
@@ -16,38 +17,29 @@ const Transfer = () => {
 
   const handleChange = (e) => setFormData({...formData, [e.target.name]: e.target.value});
 
-  const checkRisk = (amount, account) => {
-    // Fake FinGuard Logic Intercept
-    const amt = parseFloat(amount);
-    if (amt > 100000) {
-      return {
-        type: 'block',
-        title: 'Transaction Blocked',
-        message: 'FinGuard blocked this transaction. Transfers over $100,000 are not permitted on new accounts without manual verification.'
-      };
-    }
-    if (account.includes('1234')) {
-      return {
-        type: 'pause',
-        title: 'Suspicious Account Detected',
-        message: 'FinGuard paused this transfer. The destination account address matches known fraudulent patterns. Are you absolutely sure you want to proceed?'
-      };
-    }
-    if (amt > 10000) {
-      return {
-        type: 'nudge',
-        title: 'Large Transfer Alert',
-        message: 'You are about to transfer a significant portion of your portfolio. Please double check the recipient details before sending.'
-      };
-    }
-    return null;
-  };
+  // Remove checkRisk, use fraudSignalCheck instead
 
-  const handleTransfer = (e) => {
+
+  const handleTransfer = async (e) => {
     e.preventDefault();
-    const risk = checkRisk(formData.amount, formData.accountNumber);
-    if (risk) {
-      setAlertConfig(risk);
+    // Call fraud engine before transfer
+    const fraudResult = await fraudSignalCheck(formData);
+    let alertType = 'nudge', alertTitle = '', alertMessage = '';
+    if (fraudResult.action === 'Block') {
+      alertType = 'block';
+      alertTitle = 'Transaction Blocked';
+      alertMessage = `Fraud Signal Score: ${fraudResult.riskScore}/100. This transfer is blocked due to high risk.\n\nDetails: ${fraudResult.details.map(d => d.name + ': ' + d.score).join(', ')}`;
+    } else if (fraudResult.action === 'Pause') {
+      alertType = 'pause';
+      alertTitle = 'Suspicious Activity Detected';
+      alertMessage = `Fraud Signal Score: ${fraudResult.riskScore}/100. Please review this transfer.\n\nDetails: ${fraudResult.details.map(d => d.name + ': ' + d.score).join(', ')}`;
+    } else if (fraudResult.action === 'Nudge') {
+      alertType = 'nudge';
+      alertTitle = 'Caution: Potential Risk';
+      alertMessage = `Fraud Signal Score: ${fraudResult.riskScore}/100. Please double check the recipient details.\n\nDetails: ${fraudResult.details.map(d => d.name + ': ' + d.score).join(', ')}`;
+    }
+    if (fraudResult.action !== 'Pass') {
+      setAlertConfig({ type: alertType, title: alertTitle, message: alertMessage });
     } else {
       executeTransfer();
     }
