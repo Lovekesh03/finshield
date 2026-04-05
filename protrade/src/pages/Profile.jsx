@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTrading } from '../context/TradingContext';
 
 const Profile = () => {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const { balance, portfolio } = useTrading();
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({
@@ -14,9 +14,10 @@ const Profile = () => {
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
+
   const handleSave = e => {
     e.preventDefault();
-    // Simulate save
+    updateProfile(form);
     setSuccess('Profile updated!');
     setEditMode(false);
     setTimeout(() => setSuccess(''), 1500);

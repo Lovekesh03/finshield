@@ -33,13 +33,20 @@ export const AuthProvider = ({ children }) => {
     return true;
   };
 
+
+  const updateProfile = (newDetails) => {
+    setUser((prev) => ({ ...prev, ...newDetails }));
+    // Optionally persist to localStorage or backend here
+    // For demo, just update state
+  };
+
   const logout = () => {
     localStorage.removeItem('jwt_token');
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, register, updateProfile, loading }}>
       {children}
     </AuthContext.Provider>
   );
