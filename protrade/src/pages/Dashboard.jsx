@@ -58,11 +58,17 @@ const Dashboard = () => {
               {/* Deposit Modal */}
               {showDeposit && (
                 <div style={{
-                  position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.3)', zIndex: 1000,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.55)', zIndex: 2000,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(2px)'
                 }}>
-                  <div className="glass-panel animate-slide-up" style={{ minWidth: 320, padding: 32, position: 'relative' }}>
-                    <button onClick={() => setShowDeposit(false)} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: 'var(--text-muted)' }}>&times;</button>
+                  <div className="glass-panel animate-slide-up" style={{ minWidth: 340, padding: 36, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', borderRadius: 16 }}>
+                    <button onClick={() => setShowDeposit(false)}
+                      style={{
+                        position: 'absolute', top: 10, right: 10, background: '#fff', border: '1px solid #eee', borderRadius: '50%', width: 36, height: 36,
+                        fontSize: 22, cursor: 'pointer', color: '#333', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10
+                      }}
+                      aria-label="Close deposit modal"
+                    >&times;</button>
                     <h2 className="text-xl" style={{ marginBottom: 16 }}>Deposit Funds</h2>
                     <form onSubmit={handleDeposit}>
                       <div className="input-group">
