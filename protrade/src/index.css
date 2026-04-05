@@ -1,23 +1,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap');
 
+
 :root {
+  /* Light mode variables */
+  --bg-dark: #f7f8fa;
+  --bg-darker: #f1f3f5;
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --text-main: #181a1b;
+  --text-muted: #6b7280;
+  --accent-primary: #2563eb;
+  --accent-secondary: #7c3aed;
+  --accent-success: #059669;
+  --accent-danger: #dc2626;
+  --accent-warning: #d97706;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.10);
+  --shadow-neon: 0 0 15px rgba(59, 130, 246, 0.12);
+  --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.dark {
   --bg-dark: #0f1115;
   --bg-darker: #0a0b0d;
   --glass-bg: rgba(25, 29, 36, 0.4);
   --glass-border: rgba(255, 255, 255, 0.08);
   --text-main: #f1f3f5;
   --text-muted: #8c909c;
-  
   --accent-primary: #3b82f6;
   --accent-secondary: #8b5cf6;
   --accent-success: #10b981;
   --accent-danger: #ef4444;
   --accent-warning: #f59e0b;
-  
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   --shadow-neon: 0 0 15px rgba(59, 130, 246, 0.3);
-  
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
@@ -36,6 +53,7 @@ body {
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 25%);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
 }
 
 h1, h2, h3, h4, h5, h6 {

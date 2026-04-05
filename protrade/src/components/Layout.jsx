@@ -1,14 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, ArrowRightLeft, ShieldCheck, LogOut, Wallet } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTrading } from '../context/TradingContext';
 
 const Layout = ({ children }) => {
+
   const { user, logout } = useAuth();
   const { balance, notifications } = useTrading();
   const [dismissed, setDismissed] = useState([]);
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const handleThemeToggle = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleLogout = () => {
     logout();
@@ -18,16 +33,24 @@ const Layout = ({ children }) => {
   return (
     <div className="app-container">
       {/* Sidebar */}
-      <aside className="glass-panel" style={{ width: '260px', borderRadius: 0, borderRight: '1px solid var(--glass-border)', padding: '24px', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ marginBottom: '40px' }}>
+      <aside className="glass-panel" style={{ width: '260px', borderRadius: 0, borderRight: '1px solid var(--glass-border)', padding: '24px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h2 className="text-2xl text-gradient flex items-center gap-2">
             <ShieldCheck size={28} />
             ProTrade
           </h2>
+          <button
+            onClick={handleThemeToggle}
+            className="btn btn-outline"
+            style={{ marginLeft: 8, padding: '6px 12px', fontSize: 15 }}
+            aria-label="Toggle dark/light mode"
+          >
+            {theme === 'dark' ? '🌙' : '☀️'}
+          </button>
           <span className="badge badge-success text-sm" style={{ marginTop: '8px', display: 'inline-block' }}>Secured by FinShield</span>
         </div>
 
-        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 12 }}>
           <NavLink to="/" className={({isActive}) => `btn ${isActive ? 'btn-primary' : 'btn-outline'}`} style={{ justifyContent: 'flex-start' }}>
             <LayoutDashboard size={20} /> Dashboard
           </NavLink>
