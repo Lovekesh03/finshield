@@ -34,7 +34,7 @@ const Layout = ({ children }) => {
     <div className="app-container">
       {/* Sidebar */}
       <aside className="glass-panel" style={{ width: '260px', borderRadius: 0, borderRight: '1px solid var(--glass-border)', padding: '24px', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h2 className="text-2xl text-gradient flex items-center gap-2">
             <ShieldCheck size={28} />
             ProTrade
@@ -47,8 +47,8 @@ const Layout = ({ children }) => {
           >
             {theme === 'dark' ? '🌙' : '☀️'}
           </button>
-          <span className="badge badge-success text-sm" style={{ marginTop: '8px', display: 'inline-block' }}>Secured by FinShield</span>
         </div>
+        <span className="badge badge-success text-sm" style={{ marginBottom: '24px', display: 'inline-block', alignSelf: 'flex-start' }}>Secured by FinShield</span>
 
         <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px', marginTop: 12 }}>
           <NavLink to="/" className={({isActive}) => `btn ${isActive ? 'btn-primary' : 'btn-outline'}`} style={{ justifyContent: 'flex-start' }}>
@@ -63,7 +63,12 @@ const Layout = ({ children }) => {
           <NavLink to="/safe-explore" className={({isActive}) => `btn ${isActive ? 'btn-primary' : 'btn-outline'}`} style={{ justifyContent: 'flex-start' }}>
             <ShieldCheck size={20} /> Safe Explore Tab
           </NavLink>
+          <NavLink to="/profile" className={({isActive}) => `btn ${isActive ? 'btn-primary' : 'btn-outline'}`} style={{ justifyContent: 'flex-start' }}>
+            <LogOut size={20} style={{ transform: 'rotate(-90deg)' }} /> Profile
+          </NavLink>
         </nav>
+
+        {/* badge moved above navigation */}
 
         <div className="glass-card" style={{ marginTop: 'auto', marginBottom: '16px' }}>
           <div className="text-sm text-muted">Buying Power</div>
