@@ -1,5 +1,5 @@
 # finshield
-ProTrade — Demo Trading Platform
+ProTrade(powered by finshield)  — Demo Trading Platform
 ProTrade is a modern, demo trading platform built with React and Vite. It simulates stock trading, fund transfers, user authentication, and privacy features with a beautiful, glassmorphic UI. All logic is simulated in the frontend for demonstration purposes.
 
 Tech Stack
