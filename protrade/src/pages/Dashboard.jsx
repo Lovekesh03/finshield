@@ -79,7 +79,7 @@ const Dashboard = () => {
               {showDeposit && (
                 <div
                   style={{
-                    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.55)', zIndex: 2000,
+                    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.25)', zIndex: 2000,
                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}
                   onClick={handleOverlayClick}
@@ -89,7 +89,19 @@ const Dashboard = () => {
                   <div
                     ref={modalContentRef}
                     className="glass-panel animate-slide-up"
-                    style={{ minWidth: 340, padding: 36, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', borderRadius: 16 }}
+                    style={{
+                      minWidth: 340,
+                      padding: 36,
+                      position: 'relative',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.25)',
+                      borderRadius: 16,
+                      background: '#fff',
+                      border: '2px solid #6c63ff',
+                      color: '#222',
+                      maxWidth: '90vw',
+                      maxHeight: '90vh',
+                      overflowY: 'auto',
+                    }}
                   >
                     <button
                       onClick={() => setShowDeposit(false)}
