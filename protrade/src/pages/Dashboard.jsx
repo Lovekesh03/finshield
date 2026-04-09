@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTrading } from '../context/TradingContext';
 import { TrendingUp, TrendingDown, DollarSign, Briefcase, Clock } from 'lucide-react';
 
@@ -36,6 +36,26 @@ const Dashboard = () => {
     }
   };
 
+  // Ref for modal content to prevent closing when clicking inside
+  const modalContentRef = useRef(null);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!showDeposit) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setShowDeposit(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showDeposit]);
+
+  // Handler for clicking overlay
+  const handleOverlayClick = (e) => {
+    if (modalContentRef.current && !modalContentRef.current.contains(e.target)) {
+      setShowDeposit(false);
+    }
+  };
+
   return (
     <div className="animate-slide-up">
       <header style={{ marginBottom: '32px' }}>
@@ -57,17 +77,28 @@ const Dashboard = () => {
           </button>
               {/* Deposit Modal */}
               {showDeposit && (
-                <div style={{
-                  position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.55)', zIndex: 2000,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(2px)'
-                }}>
-                  <div className="glass-panel animate-slide-up" style={{ minWidth: 340, padding: 36, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', borderRadius: 16 }}>
-                    <button onClick={() => setShowDeposit(false)}
+                <div
+                  style={{
+                    position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.55)', zIndex: 2000,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}
+                  onClick={handleOverlayClick}
+                  aria-modal="true"
+                  role="dialog"
+                >
+                  <div
+                    ref={modalContentRef}
+                    className="glass-panel animate-slide-up"
+                    style={{ minWidth: 340, padding: 36, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', borderRadius: 16 }}
+                  >
+                    <button
+                      onClick={() => setShowDeposit(false)}
                       style={{
                         position: 'absolute', top: 10, right: 10, background: '#fff', border: '1px solid #eee', borderRadius: '50%', width: 36, height: 36,
                         fontSize: 22, cursor: 'pointer', color: '#333', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10
                       }}
                       aria-label="Close deposit modal"
+                      tabIndex={0}
                     >&times;</button>
                     <h2 className="text-xl" style={{ marginBottom: 16 }}>Deposit Funds</h2>
                     <form onSubmit={handleDeposit}>
